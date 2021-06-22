@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Event Detection</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+</head>
+<style>
+    #event_detection {
+        border-collapse: collapse;
+        width: 100%;
+        position: absolute;
+        top: 100px;
+        left: 2%;
+        padding: 6px;
+        margin: auto;
+    }
+
+    #topic {
+        width: 100%;
+    }
+
+    .button {
+        background-color: #4CAF50;
+        /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        cursor: pointer;
+        float: left;
+    }
+
+    .button:hover {
+        background-color: #3e8e41;
+    }
+
+    #table {
+        width: 97%;
+    }
+
+    #table td,
+    #customers th {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    #table tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    #table tr:hover {
+        background-color: #ddd;
+    }
+
+    #table th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: #04AA6D;
+        color: white;
+    }
+</style>
+<body>
+{% extends "template.html" %}
+{% block content %}
+    <div id="event_detection">
+        <h4> Select topic to detect event: </h4>
+        <br>
+
+        <div id="topic">
+            {% for i in range(1,16) %}
+                <form method="post" action="/extract_topic">
+                    <input type="submit" class="button" value="Topic {{ i }}">
+                    <input type="hidden" name="topic" value="{{ i }}">
+                    <input type="hidden" name="kw" value="{{ keyword }}">
+                </form>
+            {% endfor %}
+        </div>
+        <br>
+    <br>
+    <br>
+    <br>
+        {#        <h1> {{ tweets_distribute }} </h1>#}
+        {% if flag == 1 %}
+            <div id="chartContainer" style="height: 300px; width: 97%;"></div>
+            <script>
+                var datajson = {{ tweets_distribute| tojson | safe }};
+                console.log(datajson)
+                window.onload = function () {
+                    console.log(`datajson`, datajson)
+                    var chart = new CanvasJS.Chart("chartContainer", {
+                        animationEnabled: true,
+                        theme: "light2",
+                        title: {
+                            text: "Tweets distribution"
+                        },
+                        data: [{
+                            type: "line",
+                            indexLabelFontSize: 16,
+                            dataPoints: datajson.map(function (element) {
+                                return {
+                                    x: element.start,
+                                    y: element.number_tweets
+                                }
+                            })
+                        }]
+                    });
+                    chart.render();
+                }
+            </script>
+
+            <div id="table_content">
+                <table id="table">
+                    <thead>
+                    <tr>
+                        <th scope="col" style="width: 1%; min-width: 120px">#</th>
+                        <th scope="col" style="width: 10%; min-width: 120px">Create Time</th>
+                        <th scope="col" style="width: 20%; min-width: 120px">Tweet</th>
+                        <th scope="col" style="width: 5%; min-width: 120px">Subjects</th>
+                        <th scope="col" style="width: 5%; min-width: 120px">Predicates</th>
+                        <th scope="col" style="width: 5%; min-width: 120px">Objects</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for tweet in tweets %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ tweet['create_time'] }}</td>
+                            <td>{{ tweet['tweet'] }}</td>
+                            <td>tbu</td>
+                            <td>tbu</td>
+                            <td>tbu</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+</body>
+
+</html>

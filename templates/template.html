@@ -1,0 +1,97 @@
+<html lang="en" dir="ltr">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Montserrat:ital,wght@0,400;0,500;1,400;1,500&display=swap');
+
+    *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        max-width: 100%;
+        min-height: 100vh;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 16px;
+        color: #061d1a;
+    }
+
+    a {
+        text-decoration: none;
+        color: #F6F6F2;
+    }
+
+    li {
+        list-style: none;
+    }
+
+    header {
+        background-color: #388087;
+        width: 100%;
+        display: flex;
+        position: fixed;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        font-weight: 400;
+        padding: 0.5em 1.5em;
+        z-index: 10;
+        box-shadow: 0 0.2em 0.5em #061d1a71;
+    }
+
+    .title {
+        color: #ecfef8;
+        position: absolute;
+        text-transform: capitalize;
+        margin: 0.7em 1em 0.5em 2.7em;
+        font-size: 20px;
+    }
+
+    #nav-bar {
+        align-self: center;
+    }
+
+    .nav-link {
+        display: flex;
+        flex-flow: row wrap;
+    }
+
+    .nav-link li {
+        padding: 0 1em;
+    }
+
+    @media all and (max-width: 62em) {
+        .nav-link {
+            justify-content: space-evenly;
+        }
+    }
+
+    #header-img {
+        width: 2.5em;
+        margin-right: 7em;
+        align-items: center;
+    }
+</style>
+<body>
+<header id="header">
+    <div class="logo">
+        <img id="header-img" src="{{ url_for('static',     filename='image/logo.png') }}" alt="logo">
+    </div>
+    <div class="title">
+        <p>Social Rainbow</p>
+    </div>
+    <nav id="nav-bar">
+        <ul class="nav-link">
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('keywords') }}">Manage Keywords</a></li>
+            <li><a href="{{ url_for('about') }}">About Us</a></li>
+            <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+
+
+{% block content %}
+{% endblock %}
+
+</body>
+</html>

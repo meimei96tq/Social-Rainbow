@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stream Data</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<style>
+    #content {
+        border-collapse: collapse;
+        width: 90%;
+        position: absolute;
+        top: 100px;
+        left: 5%;
+        padding: 6px;
+        margin: auto;
+        {#font-size: 16px;#}
+    }
+
+    #table {
+        width: 100%;
+    }
+
+    #table td, #customers th {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    #table tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    #table tr:hover {
+        background-color: #ddd;
+    }
+
+    #table th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: #04AA6D;
+        color: white;
+    }
+</style>
+<body>
+{% extends "template.html" %}
+{% block content %}
+    <div id="content" class="container">
+        <h4> Streaming tweets with keyword: {{ keyword }}</h4>
+        <br>
+        <form method="post", action="/event_detection">
+            <input type="submit" class="btn btn-info" value="Detect Event" style="float: right">
+            <input type="hidden" name="kw" value="{{ keyword }}">
+        </form>
+        <br>
+        <br>
+        <table id="table">
+            <thead>
+            <tr>
+                <th style="width: 1%; min-width: 50px">#</th>
+                <th style="width: 10%; min-width: 120px">Create Time</th>
+                <th style="width: 50%; min-width: 120px">Tweets</th>
+                {#                <th style="width: 5%; min-width: 120px">Language</th>#}
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in tweet_col %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ row['create_time'] }}</td>
+                    <td>{{ row['tweet'] }}</td>
+                    {#                    <td>{{ row['lang'] }}</td>#}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+</body>
+</html>

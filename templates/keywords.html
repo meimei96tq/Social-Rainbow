@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Keywords</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<style>
+    {#body {#}
+    {#    height: auto;#}
+    {#    position: absolute;#}
+    {#    width: 100%;#}
+
+    #content {
+        border-collapse: collapse;
+        width: 90%;
+        position: absolute;
+        top: 100px;
+        left: 5%;
+        padding: 6px;
+        margin: auto;
+    }
+
+    #table {
+        width: 100%;
+    }
+
+    #table td, #customers th {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    #table tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    #table tr:hover {
+        background-color: #ddd;
+    }
+
+    #table th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: #04AA6D;
+        color: white;
+    }
+
+    #add_keyword {
+        width: 100%;
+    }
+
+    input[type=text], select {
+        width: 93%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .button {
+        background-color: #4CAF50;
+        border: none;
+        color: white;
+        padding: 12px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+</style>
+<body>
+{% extends "template.html" %}
+{% block content %}
+    <div id="content">
+    <form id="add_keyword">
+        <input type="text" id="keyword" name="keyword" placeholder="Type a keyword">
+        <input type="button" class="button" value="Add">
+    </form>
+    <br>
+    <table id="table">
+        <thead>
+        <tr>
+            <th style="width: 1%; min-width: 50px">#</th>
+            <th style="width: 50%; min-width: 120px">Keyword</th>
+            <th style="width: auto; min-width: 120px">Status</th>
+            {#            <th style="width: auto; min-width: 120px">No. of Tweets</th>#}
+            <th style="width: 10%; min-width: 220px">Action</th>
+            <th style="width: 5%; min-width: 120px">Detect Event</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for keyword in keywords %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ keyword['keyword'] }}</td>
+                {% if keyword['status'] == 0 %}
+                    <td>Available</td>
+                {% endif %}
+                {% if keyword['status'] == 1 %}
+                    <td>Streaming</td>
+                {% endif %}
+                {#                <td>{{ keyword['tweets'] }}</td>#}
+                <td>
+                    <div class="btn-group">
+                        {% if keyword['status'] == 1 %}
+                            <form method="post" action="/keywords">
+                                <input type="submit" class="btn btn-primary" onClick="history.go(0)" value="Stop">
+                                <input type="hidden" name="flag" value="stop">
+                                <input type="hidden" name="kw" value="{{ keyword['keyword'] }}">
+                            </form>
+                        {% endif %}
+                        {% if keyword['status'] == 0 %}
+                            <form method="post" action="/stream_data">
+                                <input type="submit" class="btn btn-warning" value="Stream" data-toggle="modal"
+                                       data-target="#myModal">
+                                <input type="hidden" name="kw" value="{{ keyword['keyword'] }}">
+
+                                <div class="modal fade" id="myModal" role="dialog">
+                                    <div class="modal-dialog">
+
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;
+                                                </button>
+                                                <h4 class="modal-title">Stream tweets by
+                                                    keyword: {{ keyword['keyword'] }}</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>Data is streaming</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <FORM>
+                                                    <INPUT TYPE="button" onClick="history.go(0)" VALUE="Close">
+                                                </FORM>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </form>
+                        {% endif %}
+                        <form method="post" action="/keywords">
+                            <input type="submit" name="del" class="btn btn-danger" value="Delete">
+                            <input type="hidden" name="flag" value="del">
+                            <input type="hidden" name="kw" value="{{ keyword['keyword'] }}">
+                        </form>
+                    </div>
+                </td>
+                <td>
+                    <form method="post" action="/event_detection">
+                        <input type="submit" class="btn btn-info" value="Topic Modeling">
+                        <input type="hidden" name="kw" value="{{ keyword['keyword'] }}">
+                    </form>
+
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+
+{% endblock %}
+</body>
+</html>
